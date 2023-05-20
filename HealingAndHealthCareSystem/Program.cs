@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using ScheduleManagementSession01.Extensions;
 using Services.Hubs;
 
@@ -35,6 +36,11 @@ builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 }));
 
 builder.Services.AddSignalR();
+
+// Setting token life
+// defaul: 2 hours
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                                opt.TokenLifespan = TimeSpan.FromHours(2));
 
 
 //builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>

@@ -109,6 +109,20 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
+        [HttpGet("RecoveryPassword")]
+        public async Task<ActionResult> RecoveryPassword(string email)
+        {
+            var result = await _userService.RecoveryPassword(email);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
+        [HttpGet("ResetPassword")]
+        public async Task<ActionResult> ResetPassword(string email, string token, string newPassword)
+        {
+            var result = await _userService.ResetPassword(email, token, newPassword);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
 
     }
 }

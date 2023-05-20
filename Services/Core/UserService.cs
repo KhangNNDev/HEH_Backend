@@ -4,13 +4,15 @@ using Data.DataAccess.Constant;
 using Data.Entities;
 using Data.Model;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MimeKit;
+using MailKit.Security;
+using MailKit.Net.Smtp;
 
 namespace Services.Core
 {
@@ -30,6 +32,8 @@ namespace Services.Core
         ResultModel bannedUser(Guid id);
         ResultModel unBannedUser(Guid id);
         Task<ResultModel> RegisterStaff(UserCreateModel model);
+        Task<ResultModel> RecoveryPassword(String email);
+        Task<ResultModel> ResetPassword(String email, string token, string newPassword);
 
     }
     public class UserService : IUserService
@@ -740,6 +744,78 @@ namespace Services.Core
 
         }
 
+        public async Task<ResultModel> RecoveryPassword(string email)
+        {
+            var result = new ResultModel();
+            var host = _configuration["Smtp:Host"];
+            var port = int.Parse(_configuration["Smtp:Port"]);
+
+            var username = _configuration["Smtp:Username"]; // get from Mailtrap
+            var password = _configuration["Smtp:Password"]; // get from Mailtrap
+
+            var message = new MimeMessage();
+
+            message.From.Add(new MailboxAddress("Admin Healing and Health Care", username));
+            message.To.Add(new MailboxAddress("User", email));
+            message.Subject = "Reset Password";
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var bodyBuilder = new BodyBuilder();
+
+                bodyBuilder.HtmlBody = "<p>http://https://physical-therapy-pi.vercel.app/User/ResetPassword?email=" + email + "&code=" + token + "</p>";
+                message.Body = bodyBuilder.ToMessageBody();
+                var client = new SmtpClient();
+
+                try
+                {
+                    client.Connect(host, port, SecureSocketOptions.Auto);
+                    client.Authenticate(username, password);
+
+                    client.Send(message);
+                    client.Disconnect(true);
+
+                    result.Succeed = true;
+                } catch (SmtpCommandException e)
+                {
+                    result.ErrorMessage = e.Message;
+                    result.Succeed = false;
+                }
+            } else
+            {
+                result.ErrorMessage = "User" + ErrorMessage.ID_NOT_EXISTED;
+                result.Succeed = false;
+            }
+            return result;
+        }
+
+        public async Task<ResultModel> ResetPassword(string email, string token, string newPassword)
+        {
+            var result = new ResultModel();
+            result.Succeed = false;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var response = await _userManager.ResetPasswordAsync(user, token, newPassword);
+                if (response != null && response.Succeeded)
+                {
+                    result.Succeed = true;
+                } else
+                {
+                    result.ErrorMessage = string.Join(", ", response.Errors.Select(x => x.Description));
+                    result.Succeed = false;
+                }
+            } else
+            {
+                result.ErrorMessage = "User" + ErrorMessage.ID_NOT_EXISTED;
+                result.Succeed = false;
+            }
+            return result;
+        }
     }
 
 }
