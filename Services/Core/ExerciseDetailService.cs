@@ -178,6 +178,10 @@ namespace Services.Core
                     {
                         data.isDeleted = model.isDeleted;
                     }
+                    if (model.favoriteStatus != null)
+                    {
+                        data.favoriteStatus = model.favoriteStatus; 
+                    }
 
                     _dbContext.SaveChanges();
                     result.Succeed = true;

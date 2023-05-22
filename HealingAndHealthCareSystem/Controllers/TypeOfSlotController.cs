@@ -52,6 +52,12 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
-
+        [HttpGet("[action]")]
+        public IActionResult GetByTypeName(string typeName)
+        {
+            var result = _typeOfSlotservice.GetByTypeName(typeName);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
     }
 }

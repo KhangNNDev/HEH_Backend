@@ -19,6 +19,7 @@ namespace Services.Core
         ResultModel GetBySlotID(Guid? slotid);
         ResultModel GetNumberOfPhysioRegister(Guid? slotid);
         ResultModel getAllSlotByPhysiotherapistID(Guid physiotherapistID);
+        ResultModel GetAllSlotTypeNotAssignedByDateAndPhysioID(DateTime date, Guid physioID);
     }
     public class ScheduleService : IScheduleService
     {
@@ -347,6 +348,32 @@ namespace Services.Core
             catch (Exception ex)
             {
                 result.ErrorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+            return result;
+        }
+
+        public ResultModel GetAllSlotTypeNotAssignedByDateAndPhysioID(DateTime date, Guid physioID)
+        {
+            ResultModel result = new ResultModel();
+            try
+            {
+                var schedule = _dbContext.Schedule.Where(s => s.Slot.timeStart.Date == date.Date
+                && s.Slot.timeStart.Month == date.Month
+                && s.Slot.timeStart.Year == date.Year
+                && s.typeOfSlotID == null
+                && s.physiotherapistID == physioID
+                );
+                if (schedule != null)
+                {
+                    var view = _mapper.ProjectTo<ScheduleModel>(schedule);
+                    result.Data = view;
+                    result.Succeed = true;
+                }
+
+            }
+            catch (Exception e)
+            {
+                result.ErrorMessage = e.InnerException != null ? e.InnerException.Message : e.Message;
             }
             return result;
         }

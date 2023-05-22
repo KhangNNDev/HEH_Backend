@@ -11,10 +11,11 @@ namespace Services.Core
         ResultModel Add(BookingDetailCreateModel model);
         ResultModel Update(BookingDetailUpdateModel model);
         ResultModel Get(Guid? id);
-        ResultModel GetByUserID(Guid? userID);
+        ResultModel GetByUserIDAndTypeOfSlot(Guid? userID, string typeOfSlot);
         ResultModel GetAll();
         ResultModel Delete(Guid id);
-        ResultModel GetAllBookingDetailByPhysioIDAndTypeOfSlot (Guid physioID,string typeOfSlot);
+        ResultModel GetAllBookingDetailByPhysioIDAndTypeOfSlotAndShortTermLongTermStatus(Guid physioID, string typeOfSlot, int shortTermStatus, int longTermStatus);
+        ResultModel GetLongTermListByStatus(int shortTermStatus);
     }
     public class BookingDetailService : IBookingDetailService
     {
@@ -33,7 +34,7 @@ namespace Services.Core
             try
             {
                 var data = _mapper.Map<BookingDetailCreateModel, Data.Entities.BookingDetail>(model);
-                
+
                 var bookingSchedule = _dbContext.BookingSchedule.Where(s => s.bookingScheduleID == model.bookingScheduleID);
                 var bookingScheduleData = _mapper.ProjectTo<BookingScheduleModel>(bookingSchedule).FirstOrDefault();
                 var checkSlotOfPhysio = _dbContext.Schedule.Where(s => s.physiotherapistID == bookingScheduleData!.Schedule!.physiotherapistID && s.physioBookingStatus == false).ToList();
@@ -59,7 +60,7 @@ namespace Services.Core
         {
             throw new NotImplementedException();
         }
-         
+
         public ResultModel Get(Guid? id)
         {
             ResultModel result = new ResultModel();
@@ -104,12 +105,51 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel GetAllBookingDetailByPhysioIDAndTypeOfSlot(Guid physioID, string typeOfSlot)
+        public ResultModel GetAllBookingDetailByPhysioIDAndTypeOfSlotAndShortTermLongTermStatus(Guid physioID, string typeOfSlot, int shortTermStatus, int longTermStatus)
         {
             ResultModel result = new ResultModel();
             try
             {
-                var data = _dbContext.BookingDetail.Where(s => s.bookingSchedule.Schedule.physiotherapistID == physioID && s.bookingSchedule.Schedule.TypeOfSlot.typeName == typeOfSlot);
+                var data = _dbContext.BookingDetail.Where(
+                    s => s.BookingSchedule.Schedule.physiotherapistID == physioID &&
+                s.BookingSchedule.Schedule.TypeOfSlot.typeName == typeOfSlot 
+                && s.shorttermStatus >= shortTermStatus 
+                && s.longtermStatus >= longTermStatus
+                );
+                if (data != null)
+                {
+                    var view = _mapper.ProjectTo<BookingDetailModel>(data);
+
+                    result.Data = view;
+                    result.Succeed = true;
+                }
+                else
+                {
+                    result.ErrorMessage = "BookingDetail" + ErrorMessage.ID_NOT_EXISTED;
+                    result.Succeed = false;
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                result.ErrorMessage = e.InnerException != null ? e.InnerException.Message : e.Message;
+            }
+            return result;
+        }
+
+
+
+        public ResultModel GetByUserIDAndTypeOfSlot(Guid? userID, string typeOfSlot)
+        {
+            ResultModel result = new ResultModel();
+            try
+            {
+                var data = _dbContext.BookingDetail.Where(
+                    s => s.BookingSchedule.userID == userID
+                    && s.BookingSchedule.Schedule.TypeOfSlot.typeName == typeOfSlot
+                    && ((s.shorttermStatus >= 1 && s.shorttermStatus < 3) || (s.longtermStatus >= 1 && s.longtermStatus < 3))
+                    );
                 if (data != null)
                 {
                     var view = _mapper.ProjectTo<BookingDetailModel>(data);
@@ -131,12 +171,12 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel GetByUserID(Guid? userID)
+        public ResultModel GetLongTermListByStatus(int shortTermStatus)
         {
             ResultModel result = new ResultModel();
             try
             {
-                var data = _dbContext.BookingDetail.Where(s => s.bookingSchedule.userID == userID);
+                var data = _dbContext.BookingDetail.Where(s => s.shorttermStatus == shortTermStatus && s.longtermStatus != -1);
                 if (data != null)
                 {
                     var view = _mapper.ProjectTo<BookingDetailModel>(data);
@@ -183,14 +223,18 @@ namespace Services.Core
                     {
                         data.longtermStatus = model.longtermStatus;
                     }
+                    if (data.imageUrl != null)
+                    {
+                        data.imageUrl = model.imageUrl;
+                    }
 
                     _dbContext.SaveChanges();
                     result.Succeed = true;
-                    result.Data = _mapper.Map<Data.Entities.BookingDetail, BookingDetailUpdateModel>(data);
+                    result.Data = data;
                 }
                 else
                 {
-                    result.ErrorMessage = "FavoriteExercise" + ErrorMessage.ID_NOT_EXISTED;
+                    result.ErrorMessage = "Update BookingDetail" + ErrorMessage.ID_NOT_EXISTED;
                     result.Succeed = false;
                 }
             }

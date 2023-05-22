@@ -13,7 +13,7 @@ namespace Data.Model
 
         public Guid? bookingScheduleID { get; set; }
         public string? videoCallRoom { get; set; }
-        public bool status { get; set; }
+        public string? imageUrl { get; set; }
         public int? longtermStatus { get; set; }
         public int? shorttermStatus { get; set; }
     }
@@ -24,7 +24,7 @@ namespace Data.Model
     
         public Guid? bookingScheduleID { get; set; }
         public string? videoCallRoom { get; set; }
-        public bool status { get; set; }
+        public string? imageUrl { get; set; }
         public int? longtermStatus { get; set; }
         public int? shorttermStatus { get; set; }
 

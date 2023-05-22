@@ -6,6 +6,7 @@
 
         public Guid? categoryID { get; set; }
         public Guid? medicalRecordID { get; set; }
+        public bool isDeleted { get; set; }
     }
     public class ProblemUpdateModel
     {
@@ -14,6 +15,7 @@
 
         public Guid? categoryID { get; set; }
         public Guid? medicalRecordID { get; set; }
+        public bool isDeleted { get; set; }
 
     }
     public class ProblemModel : ProblemUpdateModel

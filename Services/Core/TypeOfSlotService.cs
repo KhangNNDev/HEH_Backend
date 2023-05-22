@@ -18,6 +18,7 @@ namespace Services.Core
         ResultModel Get(Guid? id);
         ResultModel GetAll();
         ResultModel Delete(Guid id);
+        ResultModel GetByTypeName(string typeName);
 
     }
     public class TypeOfSlotService : ITypeOfSlotService
@@ -35,7 +36,7 @@ namespace Services.Core
         public ResultModel Add(TypeOfSlotCreateModel model)
         {
             var result = new ResultModel();
-            var typeName = _dbContext.TypeOfSlot.Where(s => s.typeName == model.typeName).FirstOrDefault();
+            var typeName = _dbContext.TypeOfSlot.Where(s => s.typeName == model.typeName && s.isDeleted == false).FirstOrDefault();
             try
             {   
                 if(typeName!= null)
@@ -127,6 +128,33 @@ namespace Services.Core
                 var view = _mapper.ProjectTo<TypeOfSlotModel>(data);
                 result.Data = view;
                 result.Succeed = true;
+            }
+            catch (Exception e)
+            {
+                result.ErrorMessage = e.InnerException != null ? e.InnerException.Message : e.Message;
+            }
+            return result;
+        }
+
+        public ResultModel GetByTypeName(string typeName)
+        {
+            ResultModel result = new ResultModel();
+            try
+            {
+                var data = _dbContext.TypeOfSlot.Where(s => s.typeName == typeName && !s.isDeleted).FirstOrDefault();
+                if (data != null)
+                {
+                    var view = _mapper.Map<Data.Entities.TypeOfSlot, TypeOfSlotModel>(data);
+                    result.Data = view;
+                    result.Succeed = true;
+                }
+                else
+                {
+                    result.ErrorMessage = "TypeOfSlot" + ErrorMessage.ID_NOT_EXISTED;
+                    result.Succeed = false;
+                }
+
+
             }
             catch (Exception e)
             {

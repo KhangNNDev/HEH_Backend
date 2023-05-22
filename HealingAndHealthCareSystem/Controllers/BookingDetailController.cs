@@ -53,15 +53,24 @@ namespace HealingAndHealthCareSystem.Controllers
             return BadRequest(result.ErrorMessage);
         }
         [HttpGet("[action]")]
-        public IActionResult GetByUserId(Guid userID)
+        public IActionResult GetByUserIDAndTypeOfSlot(Guid userID, string typeOfSlot)
         {
-            var result = _bookingDetailservice.GetByUserID(userID);
+            var result = _bookingDetailservice.GetByUserIDAndTypeOfSlot(userID, typeOfSlot);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
         [HttpGet("[action]")]
-        public IActionResult GetAllBookingDetailByPhysioIDAndTypeOfSlot (Guid physioID,String typeOfSlot ){
-            var result = _bookingDetailservice.GetAllBookingDetailByPhysioIDAndTypeOfSlot(physioID, typeOfSlot);
+        public IActionResult GetAllBookingDetailByPhysioIDAndTypeOfSlotAndShortTermLongTermStatus(Guid physioID,String typeOfSlot,int shortTermStatus, int longTermStatus ){
+            var result = _bookingDetailservice.GetAllBookingDetailByPhysioIDAndTypeOfSlotAndShortTermLongTermStatus(
+                physioID, typeOfSlot,shortTermStatus,longTermStatus);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetLongTermListByStatus(int shortTermStatus)
+        {
+            var result = _bookingDetailservice.GetLongTermListByStatus(shortTermStatus);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }

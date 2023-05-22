@@ -310,6 +310,7 @@ namespace Services.Core
                     data.image = model.image;
                     data.dob = model.dob;
                     data.gender = model.gender;
+                    data.PhoneNumber = model.PhoneNumber;
 
                     _dbContext.SaveChanges();
                     result.Succeed = true;

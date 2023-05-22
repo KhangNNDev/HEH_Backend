@@ -52,6 +52,12 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
-
+        [HttpGet("[action]")]
+        public IActionResult GetByMedicalRecordID(Guid medicalRecordID)
+        {
+            var result = _problemService.GetByMedicalRecordID(medicalRecordID);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
     }
 }

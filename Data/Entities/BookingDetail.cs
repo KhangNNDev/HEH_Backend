@@ -14,8 +14,9 @@ namespace Data.Entities
         public Guid bookingDetailID { get; set; }
         public Guid? bookingScheduleID { get; set; }
         [ForeignKey("bookingScheduleID")]
-        public BookingSchedule? bookingSchedule { get; set; }
+        public BookingSchedule? BookingSchedule { get; set; }
         public string? videoCallRoom { get; set; }
+        public string? imageUrl { get; set; }
         public int? longtermStatus { get; set; }
         public int? shorttermStatus { get; set; }
     }

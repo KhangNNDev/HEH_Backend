@@ -85,6 +85,7 @@ namespace Data.Model
         public string? image { get; set; }
         public DateTime dob { get; set; }
         public bool gender { get; set; } = true;
+        public string PhoneNumber { get; set; }
         public bool? bookingStatus { get; set; }
        
 

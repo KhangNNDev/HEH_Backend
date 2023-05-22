@@ -8,19 +8,19 @@ namespace HealingAndHealthCareSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserExerciseController : ControllerBase
+    public class FavoriteExerciseController : ControllerBase
     {
-        private readonly IUserExerciseService _UserExerciseservice;
-        public UserExerciseController(IUserExerciseService UserExerciseService)
+        private readonly IFavoriteExerciseService _FavoriteExerciseservice;
+        public FavoriteExerciseController(IFavoriteExerciseService FavoriteExerciseService)
         {
-            _UserExerciseservice = UserExerciseService;
+            _FavoriteExerciseservice = FavoriteExerciseService;
         }
         //[Authorize(AuthenticationSchemes = "Bearer")]
 
         [HttpPost("Create")]
-        public IActionResult Post([FromBody] UserExerciseCreateModel model)
+        public IActionResult Post([FromBody] FavoriteExerciseCreateModel model)
         {
-            var result = _UserExerciseservice.Add(model);
+            var result = _FavoriteExerciseservice.Add(model);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
@@ -29,28 +29,28 @@ namespace HealingAndHealthCareSystem.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _UserExerciseservice.GetAll();
+            var result = _FavoriteExerciseservice.GetAll();
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            var result = _UserExerciseservice.Get(id);
+            var result = _FavoriteExerciseservice.GetByUserIDAndExerciseID(id);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
-        [HttpDelete("{id}")]
-        public IActionResult DeleteById(Guid id)
+        [HttpDelete("[Action]")]
+        public IActionResult DeleteByExerciseDetailIDAndUserID(Guid detailID, Guid userID)
         {
-            var result = _UserExerciseservice.Delete(id);
+            var result = _FavoriteExerciseservice.DeleteByExerciseDetailIDAndUserID(detailID,userID);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
         [HttpPut]
-        public IActionResult Update(UserExerciseUpdateModel model)
+        public IActionResult Update(FavoriteExerciseUpdateModel model)
         {
-            var result = _UserExerciseservice.Update(model);
+            var result = _FavoriteExerciseservice.Update(model);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }

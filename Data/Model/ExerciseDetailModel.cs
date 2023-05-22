@@ -15,6 +15,7 @@ namespace Data.Model
         public string? detailName { get; set; }
         public string? set { get; set; }
         public string? description { get; set; }
+        public int favoriteStatus { get; set; }
         public bool isDeleted { get; set; }
     }
     public class ExerciseDetailUpdateModel
@@ -24,6 +25,7 @@ namespace Data.Model
         public string? detailName { get; set; }
         public string? set { get; set; }
         public string? description { get; set; }
+        public int favoriteStatus { get; set; }
         public bool isDeleted { get; set; }
 
     }

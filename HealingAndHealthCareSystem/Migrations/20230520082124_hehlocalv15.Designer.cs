@@ -3,6 +3,7 @@ using System;
 using Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealingAndHealthCareSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230520082124_hehlocalv15")]
+    partial class hehlocalv15
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,7 +211,7 @@ namespace HealingAndHealthCareSystem.Migrations
 
             modelBuilder.Entity("Data.Entities.FavoriteExercise", b =>
                 {
-                    b.Property<Guid>("favoriteExerciseID")
+                    b.Property<Guid>("FavoriteExerciseID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -221,7 +224,7 @@ namespace HealingAndHealthCareSystem.Migrations
                     b.Property<Guid>("userID")
                         .HasColumnType("uuid");
 
-                    b.HasKey("favoriteExerciseID");
+                    b.HasKey("FavoriteExerciseID");
 
                     b.HasIndex("exerciseDetailID");
 
