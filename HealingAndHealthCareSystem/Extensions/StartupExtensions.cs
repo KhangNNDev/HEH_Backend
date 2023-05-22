@@ -78,6 +78,7 @@ namespace ScheduleManagementSession01.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRelationshipService, RelationshipService>();
             services.AddScoped<IProblemService, ProblemService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
 
             //add notification service

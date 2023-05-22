@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using ScheduleManagementSession01.Extensions;
 using Services.Hubs;
@@ -31,7 +32,8 @@ builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
         "https://task.hisoft.vn",
         "https://taskuatapi.hisoft.vn",
         "https://physical-therapy-pi.vercel.app",
-        "https://github.com/codespaces/auth/tonynguyen2512-stunning-space-xylophone-55jrxpgq57qhvvp4?visibility=private&port=3000&cid=4fe1cf62a5124d11dbe1ba6a6af76d64"
+        "https://github.com/codespaces/auth/tonynguyen2512-stunning-space-xylophone-55jrxpgq57qhvvp4?visibility=private&port=3000&cid=4fe1cf62a5124d11dbe1ba6a6af76d64",
+        "https://sandbox.vnpayment.vn/"
         );
 }));
 
@@ -41,6 +43,12 @@ builder.Services.AddSignalR();
 // defaul: 2 hours
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
                                 opt.TokenLifespan = TimeSpan.FromHours(2));
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 
 //builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
@@ -88,6 +96,6 @@ app.MapControllers();
 
 app.Services.ApplyPendingMigrations();
 
-
+app.UseForwardedHeaders();
 
 app.Run();
