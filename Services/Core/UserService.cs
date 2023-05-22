@@ -754,21 +754,20 @@ namespace Services.Core
             var username = _configuration["Smtp:Username"]; // get from Mailtrap
             var password = _configuration["Smtp:Password"]; // get from Mailtrap
 
-            var message = new MimeMessage();
-
-            message.From.Add(new MailboxAddress("Admin Healing and Health Care", username));
-            message.To.Add(new MailboxAddress("User", email));
-            message.Subject = "Reset Password";
-
             var user = await _userManager.FindByEmailAsync(email);
-
             if (user != null)
             {
+                var message = new MimeMessage();
+
+                message.From.Add(new MailboxAddress("Admin Healing and Health Care", username));
+                message.To.Add(new MailboxAddress($"{user.firstName} {user.lastName}", email));
+                message.Subject = "Reset Password";
+
                 string token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                 var bodyBuilder = new BodyBuilder();
 
-                bodyBuilder.HtmlBody = "<p>http://https://physical-therapy-pi.vercel.app/User/ResetPassword?email=" + email + "&code=" + token + "</p>";
+                bodyBuilder.HtmlBody = $"<p>https://physical-therapy-pi.vercel.app/User/ResetPassword?email={email}&code={token}</p>";
                 message.Body = bodyBuilder.ToMessageBody();
                 var client = new SmtpClient();
 
