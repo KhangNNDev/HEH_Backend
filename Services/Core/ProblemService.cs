@@ -17,6 +17,7 @@ namespace Services.Core
         ResultModel Update(ProblemUpdateModel model);
         ResultModel Get(Guid? id);
         ResultModel GetAll();
+        ResultModel GetByMedicalRecordID(Guid medicalRecordID);
         ResultModel Delete(Guid id);
 
 
@@ -61,7 +62,7 @@ namespace Services.Core
                 var data = _dbContext.Problem.Where(s => s.problemID == id && !s.isDeleted).FirstOrDefault();
                 if (data != null)
                 {
-                    data.isDeleted = true;
+                    _dbContext.Problem.Remove(data);
                     _dbContext.SaveChanges();
                     var view = _mapper.Map<Problem, ProblemModel>(data);
                     result.Data = view;
@@ -118,6 +119,33 @@ namespace Services.Core
                 var view = _mapper.ProjectTo<ProblemModel>(data);
                 result.Data = view;
                 result.Succeed = true;
+            }
+            catch (Exception e)
+            {
+                result.ErrorMessage = e.InnerException != null ? e.InnerException.Message : e.Message;
+            }
+            return result;
+        }
+
+        public ResultModel GetByMedicalRecordID(Guid medicalRecordID)
+        {
+            ResultModel result = new ResultModel();
+            try
+            {
+                var data = _dbContext.Problem.Where(s => s.medicalRecordID == medicalRecordID && !s.isDeleted);
+                if (data != null)
+                {
+                    var view = _mapper.ProjectTo<ProblemModel>(data);
+                    result.Data = view;
+                    result.Succeed = true;
+                }
+                else
+                {
+                    result.ErrorMessage = "Problem" + ErrorMessage.ID_NOT_EXISTED;
+                    result.Succeed = false;
+                }
+
+
             }
             catch (Exception e)
             {

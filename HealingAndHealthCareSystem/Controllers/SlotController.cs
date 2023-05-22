@@ -19,8 +19,33 @@ namespace HealingAndHealthCareSystem.Controllers
         public IActionResult Post([FromBody] SlotCreateModel model)
         {
             var result = _slotservice.Add(model);
-            if (result.Succeed) return Ok(result.Data);
-            return BadRequest(result.ErrorMessage);
+            if (result.Succeed)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.Data);
+              
+            }
+            
+        }
+
+        //[Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost("[action]")]
+        public IActionResult AddLongTermSlotByPhysioID([FromBody] SlotCreateModel model, Guid physioID)
+        {
+            var result = _slotservice.AddLongTermSlotByPhysioID(model, physioID);
+            if (result.Succeed)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.Data);
+
+            }
+
         }
 
         //[Authorize(AuthenticationSchemes = "Bearer")]
@@ -46,16 +71,23 @@ namespace HealingAndHealthCareSystem.Controllers
             return BadRequest(result.ErrorMessage);
         }
         [HttpPut]
-        public IActionResult Update(SlotUpdateModel model)
+        public IActionResult Update(SlotUpdateModel model,Guid physioID)
         {
-            var result = _slotservice.Update(model);
-            if (result.Succeed) return Ok(result.Data);
-            return BadRequest(result.ErrorMessage);
+            var result = _slotservice.Update(model,physioID);
+            if (result.Succeed)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.Data);
+            }
+            
         }
         [HttpGet("[action]/{date}")]
-        public IActionResult GetByDateAndPhysioID(DateTime date, Guid physioID)
+        public IActionResult GetShortTermSlotByDateAndPhysioID(DateTime date, Guid physioID)
         {
-            var result = _slotservice.GetByDateAndPhysioID(date,physioID);
+            var result = _slotservice.GetShortTermSlotByDateAndPhysioID(date,physioID);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
@@ -66,5 +98,6 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
+
     }
 }

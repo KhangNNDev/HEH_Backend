@@ -12,37 +12,37 @@ using Data.DataAccess.Constant;
 
 namespace Services.Core
 {
-    public interface IUserExerciseService
+    public interface IFavoriteExerciseService
     {
-        ResultModel Add(UserExerciseCreateModel model);
-        ResultModel Update(UserExerciseUpdateModel model);
-        ResultModel Get(Guid? id);
+        ResultModel Add(FavoriteExerciseCreateModel model);
+        ResultModel Update(FavoriteExerciseUpdateModel model);
+        ResultModel GetByUserIDAndExerciseID(Guid? id);
         ResultModel GetAll();
-        ResultModel Delete(Guid id);
+        ResultModel DeleteByExerciseDetailIDAndUserID(Guid detailID, Guid userID);
 
     }
-    public class UserExerciseService : IUserExerciseService
+    public class FavoriteExerciseService : IFavoriteExerciseService
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
         
 
         
-        public UserExerciseService(AppDbContext dbContext, IMapper mapper)
+        public FavoriteExerciseService(AppDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             
         }
-        public ResultModel Add(UserExerciseCreateModel model)
+        public ResultModel Add(FavoriteExerciseCreateModel model)
         {
             var result = new ResultModel();
             try
             {
-                var data = _mapper.Map<UserExerciseCreateModel, Data.Entities.UserExercise>(model);
-                _dbContext.UserExercise.Add(data);
+                var data = _mapper.Map<FavoriteExerciseCreateModel, Data.Entities.FavoriteExercise>(model);
+                _dbContext.FavoriteExercise.Add(data);
                 _dbContext.SaveChanges();
-                result.Data = _mapper.Map<Data.Entities.UserExercise, UserExerciseModel>(data);
+                result.Data = _mapper.Map<Data.Entities.FavoriteExercise, FavoriteExerciseModel>(data);
                 result.Succeed = true;
 
             }
@@ -53,17 +53,20 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel Delete(Guid id)
+        public ResultModel DeleteByExerciseDetailIDAndUserID(Guid detailID, Guid userID)
         {
             ResultModel result = new ResultModel();
             try
             {   
-                var data = _dbContext.UserExercise.Where(s => s.userExerciseID == id && !s.isDeleted).FirstOrDefault();
+                var data = _dbContext.FavoriteExercise.Where(
+                s => s.exerciseDetailID == detailID
+                && s.userID == userID  
+                && !s.isDeleted).FirstOrDefault();
                 if (data != null)
                 {
-                    data.isDeleted = true;
+                    _dbContext.FavoriteExercise.Remove(data);
                     _dbContext.SaveChanges();
-                    var view = _mapper.Map<Data.Entities.UserExercise, UserExerciseModel>(data);
+                    var view = _mapper.Map<Data.Entities.FavoriteExercise, FavoriteExerciseModel>(data);
                     result.Data = view;
                     result.Succeed = true;
                 }
@@ -82,15 +85,15 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel Get(Guid? id)
+        public ResultModel GetByUserIDAndExerciseID(Guid? id)
         {
             ResultModel result = new ResultModel();
             try
             {
-                var data = _dbContext.UserExercise.Where(s => s.userExerciseID == id && !s.isDeleted);
+                var data = _dbContext.FavoriteExercise.Where(s => s.favoriteExerciseID == id && !s.isDeleted);
                 if (data != null)
                 {
-                    var view = _mapper.ProjectTo<UserExerciseModel>(data).FirstOrDefault();
+                    var view = _mapper.ProjectTo<FavoriteExerciseModel>(data).FirstOrDefault();
                     result.Data = view;
                     result.Succeed = true;
                 }
@@ -114,8 +117,8 @@ namespace Services.Core
             ResultModel result = new ResultModel();
             try
             {
-                var data = _dbContext.UserExercise.Where(s => s.isDeleted != true);
-                var view = _mapper.ProjectTo<UserExerciseModel>(data);
+                var data = _dbContext.FavoriteExercise.Where(s => s.isDeleted != true);
+                var view = _mapper.ProjectTo<FavoriteExerciseModel>(data);
                 result.Data = view;
                 result.Succeed = true;
             }
@@ -126,12 +129,12 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel Update(UserExerciseUpdateModel model)
+        public ResultModel Update(FavoriteExerciseUpdateModel model)
         {
             ResultModel result = new ResultModel();
             try
             {
-                var data = _dbContext.UserExercise.Where(s => s.userExerciseID == model.userExerciseID).FirstOrDefault();
+                var data = _dbContext.FavoriteExercise.Where(s => s.favoriteExerciseID == model.favoriteExerciseID).FirstOrDefault();
                 if (data != null)
                 {
                     if (model.exerciseDetailID != null)
@@ -139,18 +142,14 @@ namespace Services.Core
                     
                         data.exerciseDetailID = model.exerciseDetailID;
                     }
-                    if (model.duarationTime != null)
+                    if (model.userID != null)
                     {
-                        data.duarationTime = model.duarationTime;
-                    }
-                    if (model.status != null)
-                    {
-                        data.status = model.status;
+                        data.userID = model.userID;
                     }
 
                     _dbContext.SaveChanges();
                     result.Succeed = true;
-                    result.Data = _mapper.Map<Data.Entities.UserExercise, UserExerciseModel>(data);
+                    result.Data = _mapper.Map<Data.Entities.FavoriteExercise, FavoriteExerciseModel>(data);
                 }
                 else
                 {

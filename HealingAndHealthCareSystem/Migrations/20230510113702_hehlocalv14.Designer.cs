@@ -3,6 +3,7 @@ using System;
 using Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealingAndHealthCareSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230510113702_hehlocalv14")]
+    partial class hehlocalv14
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,9 +164,6 @@ namespace HealingAndHealthCareSystem.Migrations
                     b.Property<Guid>("exerciseID")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("favoriteStatus")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
 
@@ -204,30 +204,6 @@ namespace HealingAndHealthCareSystem.Migrations
                     b.HasIndex("exerciseDetailID");
 
                     b.ToTable("ExerciseResource");
-                });
-
-            modelBuilder.Entity("Data.Entities.FavoriteExercise", b =>
-                {
-                    b.Property<Guid>("favoriteExerciseID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("exerciseDetailID")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("userID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("favoriteExerciseID");
-
-                    b.HasIndex("exerciseDetailID");
-
-                    b.HasIndex("userID");
-
-                    b.ToTable("FavoriteExercise");
                 });
 
             modelBuilder.Entity("Data.Entities.Feedback", b =>
@@ -647,6 +623,36 @@ namespace HealingAndHealthCareSystem.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entities.UserExercise", b =>
+                {
+                    b.Property<Guid>("userExerciseID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("duarationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("exerciseDetailID")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("userID")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("userExerciseID");
+
+                    b.HasIndex("exerciseDetailID");
+
+                    b.HasIndex("userID");
+
+                    b.ToTable("UserExercise");
+                });
+
             modelBuilder.Entity("Data.Entities.UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -752,11 +758,11 @@ namespace HealingAndHealthCareSystem.Migrations
 
             modelBuilder.Entity("Data.Entities.BookingDetail", b =>
                 {
-                    b.HasOne("Data.Entities.BookingSchedule", "BookingSchedule")
+                    b.HasOne("Data.Entities.BookingSchedule", "bookingSchedule")
                         .WithMany()
                         .HasForeignKey("bookingScheduleID");
 
-                    b.Navigation("BookingSchedule");
+                    b.Navigation("bookingSchedule");
                 });
 
             modelBuilder.Entity("Data.Entities.BookingSchedule", b =>
@@ -815,25 +821,6 @@ namespace HealingAndHealthCareSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("ExerciseDetail");
-                });
-
-            modelBuilder.Entity("Data.Entities.FavoriteExercise", b =>
-                {
-                    b.HasOne("Data.Entities.ExerciseDetail", "ExerciseDetail")
-                        .WithMany()
-                        .HasForeignKey("exerciseDetailID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("userID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ExerciseDetail");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Data.Entities.Feedback", b =>
@@ -944,6 +931,25 @@ namespace HealingAndHealthCareSystem.Migrations
                         .HasForeignKey("roleID");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Data.Entities.UserExercise", b =>
+                {
+                    b.HasOne("Data.Entities.ExerciseDetail", "ExerciseDetail")
+                        .WithMany()
+                        .HasForeignKey("exerciseDetailID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExerciseDetail");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Data.Entities.UserRole", b =>

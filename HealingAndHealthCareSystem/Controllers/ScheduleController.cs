@@ -89,7 +89,13 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
-      
+        [HttpGet("[action]")]
+        public IActionResult GetAllSlotTypeNotAssignedByDateAndPhysioID(DateTime date, Guid physioID)
+        {
+            var result = _scheduleService.GetAllSlotTypeNotAssignedByDateAndPhysioID(date, physioID);
+            if (result.Succeed) return Ok(result.Data);
+            return BadRequest(result.ErrorMessage);
+        }
 
     }
 }

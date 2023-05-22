@@ -239,23 +239,23 @@ namespace Services.Core
                 var data = _dbContext.SubProfile.Where(s => s.profileID == model.profileID).FirstOrDefault();
                 if (data != null)
                 {
-                    if (model.userID == data.userID)
+                    if (model.userID != null)
                     {
                         data.userID = model.userID;
                     }
-                    if (model.relationId == data.relationId)
+                    if (model.relationId != null)
                     {
                         data.relationId = model.relationId;
                     }
 
-                    //if (model.subName != null)
-                    //{
-                    //    data.subName = model.subName;
-                    //}
-                    //if (model.dateOfBirth != null)
-                    //{
-                    //    data.dateOfBirth = model.dateOfBirth;
-                    //}
+                    if (model.subName != null)
+                    {
+                        data.subName = model.subName;
+                    }
+                    if (model.dateOfBirth != null)
+                    {
+                        data.dateOfBirth = model.dateOfBirth;
+                    }
                     if (model.isDeleted != null)
                     {
                         data.isDeleted = model.isDeleted;

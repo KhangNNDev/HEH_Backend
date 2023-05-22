@@ -61,23 +61,24 @@ namespace ScheduleManagementSession01.Extensions
         }
         public static void AddBussinessService(this IServiceCollection services)
         {
-            services.AddScoped<IExerciseService, Services.Core.ExerciseService>();
-            services.AddScoped<ICategoryService, Services.Core.CategoryService>();
-            services.AddScoped<IExerciseDetailService, Services.Core.ExerciseDetailService>();
-            services.AddScoped<IPhysiotherapistService, Services.Core.PhysiotherapistService>();
-            services.AddScoped<IScheduleService, Services.Core.ScheduleService>();
-            services.AddScoped<ITypeOfSlotService, Services.Core.TypeOfSlotService>();
-            services.AddScoped<ISlotService, Services.Core.SlotService>();
-            services.AddScoped<IMedicalRecordService, Services.Core.MedicalRecordService>();
-            services.AddScoped<IFeedbackService, Services.Core.FeedbackService>();
+            services.AddScoped<IExerciseService, ExerciseService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IExerciseDetailService, ExerciseDetailService>();
+            services.AddScoped<IPhysiotherapistService, PhysiotherapistService>();
+            services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<ITypeOfSlotService, TypeOfSlotService>();
+            services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IBookingDetailService, BookingDetailService>();
             services.AddScoped<IBookingScheduleService, BookingScheduleService>();
             services.AddScoped<IExerciseResourceService, ExerciseResourceService>();
             services.AddScoped<ISubProfileService, SubProfileService>();
-            services.AddScoped<IUserExerciseService, UserExerciseService>();
+            services.AddScoped<IFavoriteExerciseService, FavoriteExerciseService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRelationshipService, RelationshipService>();
             services.AddScoped<IProblemService, ProblemService>();
+
 
             //add notification service
             services.AddSingleton<INotificationHub, NotificationHub>();

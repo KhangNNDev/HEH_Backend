@@ -20,6 +20,7 @@ namespace Data.Entities
         public string? set { get; set; }
         //[Column(TypeName = "varchar(1000)")]
         public string? description { get; set; }
+        public int favoriteStatus { get; set; }
         public bool isDeleted { get; set; }
     }
 }
