@@ -14,7 +14,7 @@ namespace Data.Model
         public Guid userID { get; set; }
         public Guid relationId { get; set; }
         public string? subName { get; set; }
-
+        public DateTime dateOfBirth { get; set; }
         public bool isDeleted { get; set; }
     }
     public class SubProfileUpdateModel

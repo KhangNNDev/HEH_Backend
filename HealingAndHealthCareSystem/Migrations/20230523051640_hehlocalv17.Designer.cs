@@ -3,6 +3,7 @@ using System;
 using Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealingAndHealthCareSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230523051640_hehlocalv17")]
+    partial class hehlocalv17
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,18 +265,22 @@ namespace HealingAndHealthCareSystem.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("curing")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("difficult")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("injury")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("medicine")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("problem")

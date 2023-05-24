@@ -116,12 +116,26 @@ namespace HealingAndHealthCareSystem.Controllers
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }
-        [HttpGet("ResetPassword")]
-        public async Task<ActionResult> ResetPassword(string email, string token, string newPassword)
+        [HttpPost("ResetPassword")]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordModel resetPasswordModel)
         {
-            var result = await _userService.ResetPassword(email, token, newPassword);
+            var result = await _userService.ResetPassword(resetPasswordModel);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
+        }
+        [HttpPost("[action]")]
+        public IActionResult CheckRegisterMember([FromBody] MemberCreateModel model)
+        {
+            var result = _userService.CheckRegisterMember(model);
+            if (result.Succeed)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.Data);
+            }
+            
         }
 
     }

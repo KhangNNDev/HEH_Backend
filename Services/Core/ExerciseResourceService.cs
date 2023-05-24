@@ -34,7 +34,7 @@ namespace Services.Core
         public ResultModel Add(ExerciseResourceCreateModel model)
         {
             var result = new ResultModel();
-            var exerResource = _dbContext.ExerciseResource.Where(s => s.resourceName == model.resourceName).FirstOrDefault();
+            var exerResource = _dbContext.ExerciseResource.Where(s => s.resourceName == model.resourceName && !s.isDeleted).FirstOrDefault();
             try
             {
                 if(exerResource != null)

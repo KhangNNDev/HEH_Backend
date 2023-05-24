@@ -42,7 +42,7 @@ namespace Services.Core
         public ResultModel Add(ExerciseDetailCreateModel model)
         {
             var result = new ResultModel();
-            var exerDetail = _dbContext.ExerciseDetail.Where(s => s.detailName == model.detailName).FirstOrDefault();
+            var exerDetail = _dbContext.ExerciseDetail.Where(s => s.detailName == model.detailName && !s.isDeleted).FirstOrDefault();
             try
             {
                 if (exerDetail != null)

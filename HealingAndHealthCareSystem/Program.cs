@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization.Routing;
+using Microsoft.Extensions.Options;
 using ScheduleManagementSession01.Extensions;
 using Services.Hubs;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,18 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+builder.Services.Configure<RequestLocalizationOptions>(option =>
+{
+    var supportedCultures = new List<CultureInfo>
+    {
+        new CultureInfo("vi-VN")
+    };
+
+    option.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(culture: "vi-VN", uiCulture: "vi-VN");
+    option.SupportedCultures = supportedCultures;
+    option.SupportedUICultures = supportedCultures;
 });
 
 
@@ -97,5 +112,8 @@ app.MapControllers();
 app.Services.ApplyPendingMigrations();
 
 app.UseForwardedHeaders();
+
+var localizeOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizeOptions.Value);
 
 app.Run();

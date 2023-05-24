@@ -36,7 +36,7 @@ namespace Services.Core
         public ResultModel Add(ExerciseCreateModel model)
         {
             var result = new ResultModel();
-            var exerName = _dbContext.Exercise.Where(s => s.exerciseName == model.exerciseName).FirstOrDefault();
+            var exerName = _dbContext.Exercise.Where(s => s.exerciseName == model.exerciseName && !s.isDeleted).FirstOrDefault();
             try
             {
                 if(exerName != null)

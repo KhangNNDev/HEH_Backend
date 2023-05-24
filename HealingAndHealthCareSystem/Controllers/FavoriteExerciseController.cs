@@ -34,9 +34,9 @@ namespace HealingAndHealthCareSystem.Controllers
             return BadRequest(result.ErrorMessage);
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult Get(Guid id)
         {
-            var result = _FavoriteExerciseservice.GetByUserIDAndExerciseID(id);
+            var result = _FavoriteExerciseservice.Get(id);
             if (result.Succeed) return Ok(result.Data);
             return BadRequest(result.ErrorMessage);
         }

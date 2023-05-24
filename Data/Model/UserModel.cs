@@ -113,4 +113,11 @@ namespace Data.Model
         public string Email { get; set; }
         public string password { get; set; }
     }
+
+    public class ResetPasswordModel
+    {
+        public string email { get; set; }
+        public string token { get; set; }
+        public string newPassword { get; set; }
+    }
 }

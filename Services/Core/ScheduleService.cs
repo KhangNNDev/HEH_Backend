@@ -43,10 +43,10 @@ namespace Services.Core
                 var data = _mapper.Map<ScheduleCreateModel, Data.Entities.Schedule>(model);
                 
                 var physio = _dbContext.Physiotherapist.Where(s => s.physiotherapistID == model.physiotherapistID).FirstOrDefault();
-                if (physio!.scheduleStatus == 0)
-                {
-                    physio.scheduleStatus = 1;
-                }
+                //if (physio!.scheduleStatus == 0)
+                //{
+                //    physio.scheduleStatus = 1;
+                //}
                 var slotScheduled = _dbContext.Schedule.Where(s => s.slotID == model.slotID).ToList().Count();
                 if (slotScheduled == 4)
                 {
@@ -227,9 +227,10 @@ namespace Services.Core
             try
             {
                 var data = _dbContext.Schedule.Where(s => s.scheduleID == model.scheduleID).FirstOrDefault();
+                var physio = _dbContext.Physiotherapist.Where(s => s.physiotherapistID == model.physiotherapistID).FirstOrDefault();
                 if (data != null)
                 {
-
+                    
                     if (model.slotID != null)
                     {
                         data.slotID = model.slotID;
@@ -242,6 +243,14 @@ namespace Services.Core
                     if (model.typeOfSlotID != null)
                     {
                         data.typeOfSlotID = model.typeOfSlotID;
+                        if (physio != null)
+                        {
+                            if (physio.scheduleStatus == 0)
+                            {
+                                physio.scheduleStatus = 1;
+                            }
+                        }
+                        
                     }
                     if (model.description != null)
                     {

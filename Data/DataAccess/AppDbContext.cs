@@ -44,5 +44,6 @@ namespace Data.DataAccess
         public DbSet<Relationship> Relationship { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Problem> Problem { get; set; }
+        public DbSet<Payment> Payment { get; set; }
     }
 }

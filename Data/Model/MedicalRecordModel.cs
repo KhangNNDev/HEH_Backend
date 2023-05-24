@@ -4,10 +4,10 @@
     {
         public Guid? subProfileID { get; set; }
         public string problem { get; set; }
-        public string difficult { get; set; }
-        public string injury { get; set; }
-        public string curing { get; set; }
-        public string medicine { get; set; }
+        public string? difficult { get; set; }
+        public string? injury { get; set; }
+        public string? curing { get; set; }
+        public string? medicine { get; set; }
         public bool isDeleted { get; set; }
 
     }
@@ -16,10 +16,10 @@
         public Guid medicalRecordID { get; set; }
         public Guid? subProfileID { get; set; }
         public string problem { get; set; }
-        public string difficult { get; set; }
-        public string injury { get; set; }
-        public string curing { get; set; }
-        public string medicine { get; set; }
+        public string? difficult { get; set; }
+        public string? injury { get; set; }
+        public string? curing { get; set; }
+        public string? medicine { get; set; }
         public bool isDeleted { get; set; }
 
     }

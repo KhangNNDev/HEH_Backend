@@ -40,7 +40,7 @@ namespace Services.Core
         public ResultModel Add(CategoryCreateModel model)
         {
             var result = new ResultModel();
-            var cateName = _dbContext.Category.Where(s => s.categoryName == model.categoryName).FirstOrDefault();
+            var cateName = _dbContext.Category.Where(s => s.categoryName == model.categoryName &&!s.isDeleted).FirstOrDefault();
             try
             {
                 if(cateName != null)

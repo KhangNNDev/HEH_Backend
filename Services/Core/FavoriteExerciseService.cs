@@ -16,7 +16,7 @@ namespace Services.Core
     {
         ResultModel Add(FavoriteExerciseCreateModel model);
         ResultModel Update(FavoriteExerciseUpdateModel model);
-        ResultModel GetByUserIDAndExerciseID(Guid? id);
+        ResultModel Get(Guid? id);
         ResultModel GetAll();
         ResultModel DeleteByExerciseDetailIDAndUserID(Guid detailID, Guid userID);
 
@@ -85,7 +85,7 @@ namespace Services.Core
             return result;
         }
 
-        public ResultModel GetByUserIDAndExerciseID(Guid? id)
+        public ResultModel Get(Guid? id)
         {
             ResultModel result = new ResultModel();
             try

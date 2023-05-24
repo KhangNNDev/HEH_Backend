@@ -4,6 +4,7 @@ using Data.DataAccess.Constant;
 using Data.Entities;
 using Data.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -33,8 +34,8 @@ namespace Services.Core
         ResultModel unBannedUser(Guid id);
         Task<ResultModel> RegisterStaff(UserCreateModel model);
         Task<ResultModel> RecoveryPassword(String email);
-        Task<ResultModel> ResetPassword(String email, string token, string newPassword);
-
+        Task<ResultModel> ResetPassword(ResetPasswordModel resetPasswordModel);
+        ResultModel CheckRegisterMember(MemberCreateModel model);
     }
     public class UserService : IUserService
     {
@@ -182,7 +183,7 @@ namespace Services.Core
                         {
                             var check = await _userManager.CreateAsync(user, model.password);
                          
-                            if (check != null)
+                            if (check.Succeeded == true)
                             {
                                 var userRole = new UserRole
                                 {
@@ -197,7 +198,12 @@ namespace Services.Core
                             else
                             {
                                 result.Succeed = false;
-                                result.ErrorMessage = "Validate user wrong ";
+                                string errorOut ="";
+                                check.Errors.ToList().ForEach(error =>
+                                {
+                                    errorOut = error.Code;
+                                });
+                                result.ErrorMessage = errorOut;
                             }
                         }
                         
@@ -373,12 +379,17 @@ namespace Services.Core
                 {
                     
                     var check = await _userManager.CheckPasswordAsync(data, model.oldPassword);
-                    if(check != null)
+                    if(check == true)
                     {
-                        var change = _userManager.ChangePasswordAsync(data, model.oldPassword, model.newPassword);
-                        _dbContext.SaveChanges();
+                        var change =await _userManager.ChangePasswordAsync(data, model.oldPassword, model.newPassword);
+                      await _dbContext.SaveChangesAsync();
                         result.Succeed = true;
                         result.Data = _mapper.Map<Data.Entities.User, UserModel>(data);
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Password cũ không đúng";
+                        result.Succeed = false;
                     }
                    
                 }
@@ -793,26 +804,67 @@ namespace Services.Core
             return result;
         }
 
-        public async Task<ResultModel> ResetPassword(string email, string token, string newPassword)
+        public async Task<ResultModel> ResetPassword(ResetPasswordModel resetPasswordModel)
         {
             var result = new ResultModel();
             result.Succeed = false;
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(resetPasswordModel.email);
             if (user != null)
             {
-                var response = await _userManager.ResetPasswordAsync(user, token, newPassword);
+                var response = await _userManager.ResetPasswordAsync(user, resetPasswordModel.token, resetPasswordModel.newPassword);
                 if (response != null && response.Succeeded)
                 {
                     result.Succeed = true;
                 } else
                 {
-                    result.ErrorMessage = string.Join(", ", response.Errors.Select(x => x.Description));
+                    //result.ErrorMessage = string.Join(", ", response.Errors.Select(x => x.Description));
+                    result.ErrorMessage = "Đặt lại password thất bại";
                     result.Succeed = false;
                 }
             } else
             {
-                result.ErrorMessage = "User" + ErrorMessage.ID_NOT_EXISTED;
+                result.ErrorMessage = "Email không tồn tại" ;
                 result.Succeed = false;
+            }
+            return result;
+        }
+
+        public ResultModel CheckRegisterMember(MemberCreateModel model)
+        {
+            var result = new ResultModel();
+            result.Succeed = false;
+            try
+            {
+                var userByEmail = _dbContext.User.Where(s => s.Email == model.Email && s.banStatus == false).FirstOrDefault();
+                var userByPhone = _dbContext.User.Where(s => s.PhoneNumber == model.phoneNumber && s.banStatus == false).FirstOrDefault();
+
+                List<ErrorModel> listError = new List<ErrorModel>();
+                if (userByEmail != null)
+                {
+                    ErrorModel error = new ErrorModel();
+                    error.Error = "Email đã tồn tại";
+                    listError.Add(error);
+                }
+                if (userByPhone != null)
+                {
+                    ErrorModel error = new ErrorModel();
+                    error.Error = "Số điện thoại đã tồn tại";
+                    listError.Add(error);
+                }
+                if (listError.Count > 0)
+                {
+                    result.Succeed = false;
+                    result.Data = listError;
+                }
+                else
+                {
+                    result.Succeed = true;
+                    result.Data = "Validate Pass";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             }
             return result;
         }

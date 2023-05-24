@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Data.Utils;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
 
 namespace Services.Core
 {
@@ -122,7 +123,7 @@ namespace Services.Core
             vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
             vnpay.AddRequestData("vnp_TxnRef", OrderId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
             //Add Params of 2.1.0 Version
-            vnpay.AddRequestData("vnp_ExpireDate", CreatedDate.AddHours(1).ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_ExpireDate", CreatedDate.AddDays(2).ToString("yyyyMMddHHmmss"));
             //Billing
             vnpay.AddRequestData("vnp_Bill_Mobile", userData.phoneNumber); // So DT customer
             vnpay.AddRequestData("vnp_Bill_Email", userData.email);   // Email customer
